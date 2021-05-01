@@ -2,8 +2,7 @@ import pygame
 from PacmanPlayer import Pacman
 from Cell import *
 from GameConstants import SQUARE_SIZE
-
-FPS = 60
+from GameConstants import FPS
 
 LAYOUT_PATH = "layout.txt"
 
@@ -52,12 +51,12 @@ class Game:
 
         return rows, columns
 
-    def tick(self):
+    def render(self):
         self.display.fill([0] * 3)
         for row in self.game_board:
             for cell in row:
-                cell.draw(self.display)
-        self.pacman.draw(self.display)
+                cell.render(self.display)
+        self.pacman.render(self.display)
 
     def start_game(self):
         self.game_over = False
@@ -73,8 +72,8 @@ class Game:
                 self.pacman.handle_event(event)
 
             self.clock.tick(FPS)
-            self.tick()
-            self.pacman.tick()
+            self.render()
+            self.pacman.tick(self.game_board)
 
             pygame.display.update()
 

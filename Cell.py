@@ -2,7 +2,16 @@ import enum
 
 import pygame
 import enum
+
+import GameConstants
 from GameConstants import SQUARE_SIZE as SIZE
+
+
+def is_type(target_cell, *cell_types):
+    for cell_type in cell_types:
+        if target_cell.cell_type == cell_type:
+            return True
+    return False
 
 
 class CellType(enum.Enum):
@@ -22,7 +31,7 @@ class GameCell:
 
         self.cell_type = cell_type
 
-    def draw(self, surface):
+    def render(self, surface):
         if self.cell_type == CellType.WALL:
             pygame.draw.rect(surface, [255] * 3, (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
         elif self.cell_type == CellType.FOOD:
@@ -30,9 +39,9 @@ class GameCell:
         elif self.cell_type == CellType.EMPTY:
             pygame.draw.rect(surface, [0] * 3, (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
         elif self.cell_type == CellType.GHOST_CAGE_WALL:
-            pygame.draw.rect(surface, [133, 117, 163], (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
+            pygame.draw.rect(surface, GameConstants.GHOST_WALL_COLOR, (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
         elif self.cell_type == CellType.GHOST_CAGE_INNER:
-            pygame.draw.rect(surface, [45, 29, 51], (self.x * SIZE, self.y * SIZE, SIZE, SIZE))
+            pygame.draw.rect(surface, GameConstants.GHOST_INNER_COLOR, (self.x * SIZE, self.y * SIZE, SIZE, SIZE))
         elif self.cell_type == CellType.POWER_FOOD:
             pygame.draw.circle(surface, [255, 255, 191], (self.x * SIZE + SIZE / 2, self.y * SIZE + SIZE / 2), SIZE / 4)
 
