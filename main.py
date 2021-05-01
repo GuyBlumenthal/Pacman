@@ -1,9 +1,9 @@
 import pygame
+from PacmanPlayer import Pacman
 from Cell import *
+from GameConstants import SQUARE_SIZE
 
 FPS = 60
-
-SQUARE_SIZE = 20
 
 LAYOUT_PATH = "layout.txt"
 
@@ -17,10 +17,13 @@ class Game:
         self.game_over = False
 
         self.game_board = []
+        self.player_start = 0, 0
         self.rows, self.columns = self.read_layout_file()
 
         self.size = self.width, self.height = self.columns * SQUARE_SIZE, self.rows * SQUARE_SIZE
         self.display = pygame.display.set_mode(self.size)
+
+        self.pacman = Pacman(self.player_start)
 
     def read_layout_file(self):
         layout_file = open(LAYOUT_PATH, 'r').readlines()
@@ -37,27 +40,41 @@ class Game:
                     cell_type = CellType.WALL
                 elif c == '.':
                     cell_type = CellType.FOOD
+                elif c == '|' or c == '-':
+                    cell_type = CellType.GHOST_CAGE_WALL
+                elif c == '~':
+                    cell_type = CellType.GHOST_CAGE_INNER
+                elif c == 'P':
+                    self.player_start = i, row
+                elif c == 'X':
+                    cell_type = CellType.POWER_FOOD
                 self.game_board[row].append(GameCell(i, row, cell_type))
 
         return rows, columns
 
     def tick(self):
+        self.display.fill([0] * 3)
         for row in self.game_board:
             for cell in row:
                 cell.draw(self.display)
+        self.pacman.draw(self.display)
 
     def start_game(self):
         self.game_over = False
+        self.game_loop()
 
+    def game_loop(self):
         while not self.game_over:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                self.pacman.handle_event(event)
 
             self.clock.tick(FPS)
             self.tick()
+            self.pacman.tick()
 
             pygame.display.update()
 
