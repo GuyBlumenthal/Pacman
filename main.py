@@ -3,8 +3,7 @@ from PacmanPlayer import Pacman
 from Cell import *
 from GameConstants import SQUARE_SIZE
 from GameConstants import FPS
-
-LAYOUT_PATH = "layout.txt"
+from GameConstants import LAYOUT_PATH
 
 
 class Game:

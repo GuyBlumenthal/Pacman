@@ -33,8 +33,38 @@ class Pacman:
         self.direction = 0
         self.target_direction = 0
 
+        # Animation
+        self.animation_frames = (
+            (pygame.image.load(GameConstants.PACMAN_OPEN), 10),
+            (pygame.image.load(GameConstants.PACMAN_CLOSED), 10)
+        )
+        self.animation_timer = 0
+
     def render(self, surface):
-        pygame.draw.circle(surface, self.color, self.center_loc, self.radius)
+        pac_rect = pygame.rect.Rect(
+            self.center_loc[0] - SIZE / 2,
+            self.center_loc[1] - SIZE / 2,
+            self.radius * 2,
+            self.radius * 2
+        )
+        pac_image = pygame.transform.rotate(self.animation_tick(), -90 * self.direction)
+
+        surface.blit(pac_image, pac_rect)
+        # pygame.draw.circle(surface, self.color, self.center_loc, self.radius)
+
+    def animation_tick(self):
+        self.animation_timer = (self.animation_timer + 1) % self.total_animation_time()
+        tmp_timer = self.animation_timer
+        for frame in self.animation_frames:
+            tmp_timer -= frame[1]
+            if tmp_timer <= 0:
+                return frame[0]
+
+    def total_animation_time(self):
+        frame_sum = 0
+        for frame in self.animation_frames:
+            frame_sum += frame[1]
+        return frame_sum
 
     def tick(self, game_board, game):
         x_change = 0
@@ -65,13 +95,11 @@ class Pacman:
         if is_target_centered and next_cell_valid(self.target_direction, game_board, (col, row)):
             self.direction = self.target_direction
 
-        if is_actual_centered and not next_cell_valid(self.direction, game_board, (col, row)):
-            self.direction = 0
-
-        if self.direction == 1 or self.direction == 3:
-            y_change = self.speed * (self.direction - 2)
-        elif self.direction == 2 or self.direction == 4:
-            x_change = self.speed * (3 - self.direction)
+        if not is_actual_centered or next_cell_valid(self.direction, game_board, (col, row)):
+            if self.direction == 1 or self.direction == 3:
+                y_change = self.speed * (self.direction - 2)
+            elif self.direction == 2 or self.direction == 4:
+                x_change = self.speed * (3 - self.direction)
 
         self.center_loc[0] += x_change
         self.center_loc[1] += y_change

@@ -1,5 +1,7 @@
 import pygame
 
+LAYOUT_PATH = "layout.txt"
+
 FPS = 60
 
 SQUARE_SIZE = 20
@@ -26,3 +28,6 @@ PAC_COLOR = (255, 255, 0)
 
 GHOST_WALL_COLOR = (133, 117, 163)
 GHOST_INNER_COLOR = (45, 29, 51)
+
+PACMAN_OPEN = 'animation/pacman_open.png'
+PACMAN_CLOSED = 'animation/pacman_closed.png'
