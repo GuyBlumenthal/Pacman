@@ -50,7 +50,6 @@ class Pacman:
         pac_image = pygame.transform.rotate(self.animation_tick(), -90 * self.direction)
 
         surface.blit(pac_image, pac_rect)
-        # pygame.draw.circle(surface, self.color, self.center_loc, self.radius)
 
     def animation_tick(self):
         self.animation_timer = (self.animation_timer + 1) % self.total_animation_time()
@@ -71,7 +70,7 @@ class Pacman:
         y_change = 0
 
         estimate_col = (self.center_loc[0] - SIZE / 2) / SIZE
-        estimate_row = (self.center_loc [1] - SIZE / 2) / SIZE
+        estimate_row = (self.center_loc[1] - SIZE / 2) / SIZE
 
         row, col = round(estimate_row), round(estimate_col)
 
@@ -124,4 +123,3 @@ class Pacman:
     # TODO power_up
     def power_up(self):
         pass
-

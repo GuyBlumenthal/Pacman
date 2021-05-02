@@ -1,5 +1,6 @@
 import pygame
 from PacmanPlayer import Pacman
+from GhostPlayer import Ghost
 from Cell import *
 from GameConstants import SQUARE_SIZE
 from GameConstants import FPS
@@ -17,6 +18,7 @@ class Game:
 
         self.game_board = []
         self.player_start = 0, 0
+        self.ghosts = []
         self.rows, self.columns = self.read_layout_file()
 
         self.size = self.width, self.height = self.columns * SQUARE_SIZE, self.rows * SQUARE_SIZE
@@ -32,8 +34,8 @@ class Game:
 
         for row in range(rows):
             self.game_board.append([])
-            for i in range(len(layout_file[row])):
-                c = layout_file[row][i]
+            for col in range(len(layout_file[row])):
+                c = layout_file[row][col]
                 cell_type = CellType.EMPTY
                 if c == '#':
                     cell_type = CellType.WALL
@@ -44,10 +46,12 @@ class Game:
                 elif c == '~':
                     cell_type = CellType.GHOST_CAGE_INNER
                 elif c == 'P':
-                    self.player_start = i, row
+                    self.player_start = col, row
                 elif c == 'X':
                     cell_type = CellType.POWER_FOOD
-                self.game_board[row].append(GameCell(i, row, cell_type))
+                elif c == 'G':
+                    self.ghosts.append(Ghost((col, row), len(self.ghosts) + 1))
+                self.game_board[row].append(GameCell(col, row, cell_type))
 
         return rows, columns
 
@@ -56,6 +60,8 @@ class Game:
         for row in self.game_board:
             for cell in row:
                 cell.render(self.display)
+        for ghost in self.ghosts:
+            ghost.render(self.display)
         self.pacman.render(self.display)
 
     def start_game(self):
@@ -74,6 +80,8 @@ class Game:
             self.clock.tick(FPS)
             self.render()
             self.pacman.tick(self.game_board, self)
+            for ghost in self.ghosts:
+                ghost.tick()
 
             pygame.display.update()
 

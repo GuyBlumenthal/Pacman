@@ -27,7 +27,15 @@ PAC_SPEED = 1
 PAC_COLOR = (255, 255, 0)
 
 GHOST_WALL_COLOR = (133, 117, 163)
-GHOST_INNER_COLOR = (45, 29, 51)
+GHOST_INNER_COLOR = (0, 0, 0)
 
 PACMAN_OPEN = 'animation/pacman_open.png'
 PACMAN_CLOSED = 'animation/pacman_closed.png'
+
+GHOST_PURPLE = 'animation/ghost_purple.png'
+GHOST_RED = 'animation/ghost_red.png'
+GHOST_GREEN = 'animation/ghost_green.png'
+GHOST_BLUE = 'animation/ghost_light_blue.png'
+
+GHOST_SPEED = 1
+GHOST_HOME_WIDTH = 2
