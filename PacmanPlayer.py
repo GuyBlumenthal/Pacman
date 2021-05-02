@@ -36,7 +36,7 @@ class Pacman:
     def render(self, surface):
         pygame.draw.circle(surface, self.color, self.center_loc, self.radius)
 
-    def tick(self, game_board):
+    def tick(self, game_board, game):
         x_change = 0
         y_change = 0
 
@@ -76,6 +76,9 @@ class Pacman:
         self.center_loc[0] += x_change
         self.center_loc[1] += y_change
 
+        if game_board[row][col].is_touching_food(self.center_loc, self.radius):
+            game.eat_food(row, col)
+
     def set_direction(self, target_direction):
         self.target_direction = target_direction
 
@@ -89,4 +92,8 @@ class Pacman:
                 self.set_direction(3)
             elif event.key in GameConstants.LEFT_KEYS:
                 self.set_direction(4)
+
+    # TODO power_up
+    def power_up(self):
+        pass
 

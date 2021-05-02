@@ -9,6 +9,9 @@ RIGHT_KEYS = (pygame.K_d, pygame.K_RIGHT)
 DOWN_KEYS = (pygame.K_s, pygame.K_DOWN)
 LEFT_KEYS = (pygame.K_a, pygame.K_LEFT)
 
+FOOD_RADIUS = SQUARE_SIZE / 8
+POWER_FOOD_RADIUS = SQUARE_SIZE / 4
+
 # Pacman directions
 DIR_UP = 1
 DIR_RIGHT = 2

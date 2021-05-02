@@ -14,6 +14,7 @@ class Game:
 
         self.clock = pygame.time.Clock()
         self.game_over = False
+        self.score = 0
 
         self.game_board = []
         self.player_start = 0, 0
@@ -73,9 +74,20 @@ class Game:
 
             self.clock.tick(FPS)
             self.render()
-            self.pacman.tick(self.game_board)
+            self.pacman.tick(self.game_board, self)
 
             pygame.display.update()
+
+    def eat_food(self, row, col):
+        score, power_up = self.game_board[row][col].eat()
+
+        if power_up:
+            self.pacman.power_up()
+        self.increase_score(score)
+
+    def increase_score(self, increment):
+        self.score += increment
+        print(self.score)
 
 
 if __name__ == "__main__":
