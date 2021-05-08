@@ -6,7 +6,7 @@ import GameConstants
 
 class Ghost:
 
-    def __init__(self, left_home, ghostNum):
+    def __init__(self, left_home, ghost_num):
 
         self.left_home = left_home
         self.pos = [left_home[0] * SIZE, left_home[1] * SIZE]
@@ -19,13 +19,13 @@ class Ghost:
         self.ghost_sprite = None
         self.state = 'idle'
 
-        if ghostNum == 1:
+        if ghost_num == 1:
             self.ghost_sprite = pygame.image.load(GameConstants.GHOST_PURPLE)
-        elif ghostNum == 2:
+        elif ghost_num == 2:
             self.ghost_sprite = pygame.image.load(GameConstants.GHOST_RED)
-        elif ghostNum == 3:
+        elif ghost_num == 3:
             self.ghost_sprite = pygame.image.load(GameConstants.GHOST_GREEN)
-        elif ghostNum == 4:
+        elif ghost_num == 4:
             self.ghost_sprite = pygame.image.load(GameConstants.GHOST_BLUE)
 
     def render(self, surface):
@@ -44,7 +44,6 @@ class Ghost:
 
     def wiggle(self):
         estimate_col = self.pos[0] / SIZE
-        estimate_row = self.pos[1] / SIZE
 
         at_left = self.left_home[0] == estimate_col
         at_right = self.left_home[0] + self.home_width == estimate_col
@@ -65,3 +64,6 @@ class Ghost:
                 return True
 
         return False
+
+    def path_find(self, game_board, target_loc):
+        pass

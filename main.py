@@ -1,7 +1,8 @@
 import pygame
+import CellType
 from PacmanPlayer import Pacman
 from GhostPlayer import Ghost
-from Cell import *
+from Cell import GameCell
 from GameConstants import SQUARE_SIZE
 from GameConstants import FPS
 from GameConstants import LAYOUT_PATH
