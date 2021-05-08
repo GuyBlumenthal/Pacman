@@ -1,4 +1,5 @@
 import pygame
+import CellType
 
 LAYOUT_PATH = "layout.txt"
 
@@ -14,14 +15,21 @@ LEFT_KEYS = (pygame.K_a, pygame.K_LEFT)
 FOOD_RADIUS = SQUARE_SIZE / 8
 POWER_FOOD_RADIUS = SQUARE_SIZE / 4
 
+MAX_MAP_SCORE = 10000
+
 # Pacman directions
 DIR_UP = 1
 DIR_RIGHT = 2
 DIR_DOWN = 3
 DIR_LEFT = 4
 
+DIR_NONE = 0
+
 VERT_DIRS = [DIR_UP, DIR_DOWN]
 HORIZ_DIRS = [DIR_RIGHT, DIR_LEFT]
+
+PASSABLE_CELLS = [CellType.EMPTY, CellType.FOOD, CellType.POWER_FOOD, CellType.GHOST_CAGE_INNER]
+SOLID_CELLS = [CellType.GHOST_CAGE_WALL, CellType.WALL]
 
 PAC_SPEED = 1
 PAC_COLOR = (255, 255, 0)
@@ -39,3 +47,5 @@ GHOST_BLUE = 'animation/ghost_light_blue.png'
 
 GHOST_SPEED = 1
 GHOST_HOME_WIDTH = 2
+
+GHOST_ACTIVATION_TIME = 5000

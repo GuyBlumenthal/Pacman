@@ -1,11 +1,26 @@
 import pygame
+
+import Cell
 import CellType
+import GameConstants
 from PacmanPlayer import Pacman
 from GhostPlayer import Ghost
 from Cell import GameCell
 from GameConstants import SQUARE_SIZE
 from GameConstants import FPS
 from GameConstants import LAYOUT_PATH
+
+
+def h_function(start, target):
+    return pow(pow(start[0] - target[0], 2) + pow(start[1] - target[1], 2), 0.5)
+
+
+def reconstruct_path(came_from, current):
+    total_path = [current]
+    while current in came_from:
+        current = came_from[current]
+        total_path.insert(0, current)
+    return total_path
 
 
 class Game:
@@ -16,6 +31,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.game_over = False
         self.score = 0
+
+        self.start_time = pygame.time.get_ticks()
 
         self.game_board = []
         self.player_start = 0, 0
@@ -51,7 +68,7 @@ class Game:
                 elif c == 'X':
                     cell_type = CellType.POWER_FOOD
                 elif c == 'G':
-                    self.ghosts.append(Ghost((col, row), len(self.ghosts) + 1))
+                    self.ghosts.append(Ghost((col, row), len(self.ghosts) + 1, self.start_time))
                 self.game_board[row].append(GameCell(col, row, cell_type))
 
         return rows, columns
@@ -82,7 +99,7 @@ class Game:
             self.render()
             self.pacman.tick(self.game_board, self)
             for ghost in self.ghosts:
-                ghost.tick()
+                ghost.tick(self.game_board, self.pacman.center_loc, self)
 
             pygame.display.update()
 
@@ -96,6 +113,65 @@ class Game:
     def increase_score(self, increment):
         self.score += increment
         print(self.score)
+
+    def path_find(self, target_loc, start_loc):
+
+        start_loc = int(start_loc[1]), int(start_loc[0])
+        target_loc = int(target_loc[1]), int(target_loc[0])
+
+        open_set = [start_loc]
+
+        came_from = {}
+
+        # g_score = [[GameConstants.MAX_MAP_SCORE] * self.columns] * self.rows
+
+        g_score = {
+            (open_set[0]): 0
+        }
+
+        # h_score = [[GameConstants.MAX_MAP_SCORE] * self.columns] * self.rows
+
+        h_score = {
+            (open_set[0]): h_function(open_set[0], target_loc)
+        }
+
+        while len(open_set) > 0:
+            c_cell = open_set[0]
+            c_f = g_score[c_cell] + h_score[c_cell]
+            for cell in open_set:
+                f_score = g_score[cell] + h_score[cell]
+                if f_score < c_f:
+                    c_cell = cell
+                    c_f = f_score
+
+            if c_cell == target_loc:
+                path = reconstruct_path(came_from, c_cell)
+                if len(path) == 1:
+                    return GameConstants.DIR_NONE
+                if path[0][0] < path[1][0]:
+                    return GameConstants.DIR_DOWN
+                elif path[0][0] > path[1][0]:
+                    return GameConstants.DIR_UP
+                elif path[0][1] < path[1][1]:
+                    return GameConstants.DIR_RIGHT
+                elif path[0][1] > path[1][1]:
+                    return GameConstants.DIR_LEFT
+                return GameConstants.DIR_NONE
+
+            open_set.remove(c_cell)
+
+            for neighbour in Cell.get_neighbours(c_cell):
+                board_cell = self.game_board[neighbour[0]][neighbour[1]]
+                if board_cell.cell_type in GameConstants.PASSABLE_CELLS:
+                    tentative_g_score = g_score[c_cell] + 1
+                    if neighbour not in g_score or tentative_g_score < g_score[neighbour]:
+                        came_from[neighbour] = c_cell
+                        g_score[neighbour] = tentative_g_score
+                        h_score[neighbour] = h_function(neighbour, target_loc)
+                        if neighbour not in open_set:
+                            open_set.append(neighbour)
+
+        return GameConstants.DIR_NONE
 
 
 if __name__ == "__main__":

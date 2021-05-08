@@ -7,6 +7,25 @@ from GameConstants import SQUARE_SIZE as SIZE
 import CellType
 
 
+def is_centered(loc):
+    estimate_col = loc[0] / SIZE
+    estimate_row = loc[1] / SIZE
+
+    return (estimate_row - int(estimate_row) == 0) and (estimate_col - int(estimate_col) == 0)
+
+
+def get_neighbours(start_cell):
+
+    neighbours = [
+        (start_cell[0] + 1, start_cell[1]),
+        (start_cell[0] - 1, start_cell[1]),
+        (start_cell[0], start_cell[1] + 1),
+        (start_cell[0], start_cell[1] - 1)
+    ]
+
+    return neighbours
+
+
 def is_type(target_cell, *cell_types):
     for cell_type in cell_types:
         if target_cell.cell_type == cell_type:
