@@ -42,16 +42,13 @@ class GameCell:
         self.cell_type = cell_type
 
     def render(self, surface):
-        if self.cell_type == CellType.WALL:
+        if self.cell_type == CellType.WALL or self.cell_type == CellType.TUNNEL:
             pygame.draw.rect(surface, [255] * 3,
                              (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
         elif self.cell_type == CellType.FOOD:
             pygame.draw.circle(surface, [255] * 3,
                                (self.x * SIZE + SIZE / 2, self.y * SIZE + SIZE / 2),
                                GameConstants.FOOD_RADIUS)
-        elif self.cell_type == CellType.EMPTY:
-            pygame.draw.rect(surface, [0] * 3,
-                             (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))
         elif self.cell_type == CellType.GHOST_CAGE_WALL:
             pygame.draw.rect(surface, GameConstants.GHOST_WALL_COLOR,
                              (self.x * SIZE + 1, self.y * SIZE + 1, SIZE - 2, SIZE - 2))

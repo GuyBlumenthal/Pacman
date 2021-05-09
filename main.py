@@ -37,6 +37,7 @@ class Game:
         self.game_board = []
         self.player_start = 0, 0
         self.ghosts = []
+        self.tunnels = []
         self.rows, self.columns = self.read_layout_file()
 
         self.size = self.width, self.height = self.columns * SQUARE_SIZE, self.rows * SQUARE_SIZE
@@ -69,18 +70,21 @@ class Game:
                     cell_type = CellType.POWER_FOOD
                 elif c == 'G':
                     self.ghosts.append(Ghost((col, row), len(self.ghosts) + 1, self.start_time))
+                elif c == 'T':
+                    cell_type = CellType.TUNNEL
+                    self.tunnels.append((row, col))
                 self.game_board[row].append(GameCell(col, row, cell_type))
 
         return rows, columns
 
     def render(self):
         self.display.fill([0] * 3)
+        self.pacman.render(self.display)
         for row in self.game_board:
             for cell in row:
                 cell.render(self.display)
         for ghost in self.ghosts:
             ghost.render(self.display)
-        self.pacman.render(self.display)
 
     def start_game(self):
         self.game_over = False
@@ -123,13 +127,9 @@ class Game:
 
         came_from = {}
 
-        # g_score = [[GameConstants.MAX_MAP_SCORE] * self.columns] * self.rows
-
         g_score = {
             (open_set[0]): 0
         }
-
-        # h_score = [[GameConstants.MAX_MAP_SCORE] * self.columns] * self.rows
 
         h_score = {
             (open_set[0]): h_function(open_set[0], target_loc)

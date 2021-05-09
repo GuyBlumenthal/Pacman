@@ -3,21 +3,21 @@ import pygame
 import Cell
 from GameConstants import SQUARE_SIZE as SIZE
 import GameConstants
-from Cell import CellType
+import CellType
 
 
 def next_cell_valid(direction, game_board, pos):
-    target_cell = game_board[0][0]
+    target_cell = CellType.WALL
     col, row = pos
     if direction == GameConstants.DIR_UP:
-        target_cell = game_board[row - 1][col]
+        target_cell = game_board[row - 1][col].cell_type
     elif direction == GameConstants.DIR_RIGHT:
-        target_cell = game_board[row][col + 1]
+        target_cell = game_board[row][col + 1].cell_type
     elif direction == GameConstants.DIR_DOWN:
-        target_cell = game_board[row + 1][col]
+        target_cell = game_board[row + 1][col].cell_type
     elif direction == GameConstants.DIR_LEFT:
-        target_cell = game_board[row][col - 1]
-    return Cell.is_type(target_cell, CellType.FOOD, CellType.EMPTY, CellType.POWER_FOOD)
+        target_cell = game_board[row][col - 1].cell_type
+    return target_cell in GameConstants.PASSABLE_CELLS and target_cell is not CellType.GHOST_CAGE_INNER
 
 
 class Pacman:
@@ -90,6 +90,15 @@ class Pacman:
         elif self.direction in GameConstants.VERT_DIRS:
             if estimate_row - 1.0 * int(estimate_row) == 0.0:
                 is_actual_centered = True
+
+        if is_actual_centered:
+            on_tunnel = game_board[row][col].cell_type is CellType.TUNNEL
+            if on_tunnel:
+                tunnels = game.tunnels[:]
+                tunnels.remove((row, col))
+                opp_tunnel = tunnels.pop()
+                self.center_loc[0] = opp_tunnel[1] * SIZE + SIZE / 2
+                self.center_loc[1] = opp_tunnel[0] * SIZE + SIZE / 2
 
         if is_target_centered and next_cell_valid(self.target_direction, game_board, (col, row)):
             self.direction = self.target_direction
